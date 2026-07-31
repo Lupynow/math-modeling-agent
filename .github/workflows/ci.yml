@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Validate knowledge source
+        run: python scripts/validate_knowledge.py
+      - name: Lint and type check
+        run: |
+          ruff check src tests evals scripts
+          mypy src/modeling_agent
+      - name: Unit and API tests
+        run: pytest tests -m "not integration"
+      - name: Offline evaluation
+        run: python evals/run_offline_eval.py
+      - name: Sensitive-value scan
+        run: python scripts/check_sensitive.py
+      - name: Build API image
+        run: docker build .
+
+  integration:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: modeling
+          MYSQL_USER: modeling
+          MYSQL_PASSWORD: modeling
+          MYSQL_ROOT_PASSWORD: integration-root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -umodeling -pmodeling"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+      qdrant:
+        image: qdrant/qdrant:v1.13.2
+        ports:
+          - 6333:6333
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: MySQL and Qdrant integration
+        env:
+          RUN_INTEGRATION: "1"
+          MYSQL_TEST_URL: mysql+pymysql://modeling:modeling@127.0.0.1:3306/modeling
+          QDRANT_TEST_URL: http://127.0.0.1:6333
+        run: pytest tests/test_integration.py

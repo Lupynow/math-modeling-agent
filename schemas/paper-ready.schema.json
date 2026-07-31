@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Lupynow/math-modeling-agent/schemas/paper-ready-v1.json",
+  "title": "PaperReadyPackage",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "problem_summary",
+    "subproblems",
+    "assumptions",
+    "candidate_models",
+    "selected_model",
+    "workflow",
+    "validation_plan",
+    "citations",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "problem_summary": {"type": "string", "minLength": 1},
+    "subproblems": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "candidate_models": {"type": "array", "items": {"type": "object"}, "minItems": 2},
+    "selected_model": {"type": "object"},
+    "workflow": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "validation_plan": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "citations": {"type": "array", "items": {"type": "object"}},
+    "unresolved_questions": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["planned", "partial", "completed"]}
+  },
+  "additionalProperties": true
+}

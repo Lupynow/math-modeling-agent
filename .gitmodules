@@ -1,0 +1,3 @@
+[submodule "knowledge/math-modeling-skills"]
+	path = knowledge/math-modeling-skills
+	url = https://github.com/Lupynow/math-modeling-skills.git

@@ -1,0 +1,24 @@
+{"id":"forecasting-01","expected_type":"forecasting","text":"某企业拥有过去五年的月度销量数据，请预测未来十二个月的需求趋势并给出区间。"}
+{"id":"forecasting-02","expected_type":"forecasting","text":"根据逐小时负荷时间序列预测次日峰值，并讨论节假日对未来负荷的影响。"}
+{"id":"classification-01","expected_type":"classification","text":"利用已标注样本识别设备故障类别，比较不同分类方法的准确率。"}
+{"id":"classification-02","expected_type":"classification","text":"给定带标签的邮件特征，建立分类器判别正常邮件和异常邮件。"}
+{"id":"evaluation-01","expected_type":"evaluation","text":"建立多指标综合评价体系，对十个候选城市的宜居程度进行排名。"}
+{"id":"evaluation-02","expected_type":"evaluation","text":"使用 TOPSIS 等方法计算各供应商综合得分并评价方案稳定性。"}
+{"id":"optimization-01","expected_type":"optimization","text":"在车辆容量和时间窗约束下优化配送路径，使总成本最小。"}
+{"id":"optimization-02","expected_type":"optimization","text":"制定人员调度与资源分配方案，在满足需求的前提下寻找最优排班。"}
+{"id":"mechanistic-01","expected_type":"mechanistic","text":"根据能量守恒建立传热微分方程，研究物体温度随时间的变化机理。"}
+{"id":"mechanistic-02","expected_type":"mechanistic","text":"构建种群动力学 ODE 模型，解释捕食关系对系统稳定性的影响。"}
+{"id":"statistical-01","expected_type":"statistical","text":"利用多元回归和显著性检验分析多个因素与产量之间的相关性。"}
+{"id":"statistical-02","expected_type":"statistical","text":"通过方差分析判断不同工艺组均值是否存在统计差异。"}
+{"id":"network-01","expected_type":"network","text":"把交通系统表示为图网络，识别关键节点并求解最短路。"}
+{"id":"network-02","expected_type":"network","text":"分析社交网络中的传播过程、社区结构和节点中心性。"}
+{"id":"clustering-01","expected_type":"clustering","text":"根据消费特征进行聚类，将客户划分为若干相似群体。"}
+{"id":"clustering-02","expected_type":"clustering","text":"使用 DBSCAN 或 K-Means 对无标签空间样本进行分群。"}
+{"id":"game-theory-01","expected_type":"game_theory","text":"研究两个竞争企业的定价博弈并求解 Nash 纳什均衡策略。"}
+{"id":"game-theory-02","expected_type":"game_theory","text":"建立合作与背叛的演化博弈模型，分析长期稳定策略。"}
+{"id":"ecological-01","expected_type":"ecological","text":"评价污染排放对河流生态环境的影响，并设计减排情景。"}
+{"id":"ecological-02","expected_type":"ecological","text":"建立碳排放与森林种群变化模型，分析生态系统承载能力。"}
+{"id":"geometric-01","expected_type":"geometric","text":"在给定坐标系中计算物体运动轨迹，判断是否发生几何碰撞。"}
+{"id":"geometric-02","expected_type":"geometric","text":"利用空间几何和运动学设计机械臂的无碰撞路径。"}
+{"id":"simulation-01","expected_type":"simulation","text":"利用蒙特卡洛仿真估计随机需求下库存不足的概率。"}
+{"id":"simulation-02","expected_type":"simulation","text":"建立离散事件仿真分析排队系统的等待时间和服务能力。"}
