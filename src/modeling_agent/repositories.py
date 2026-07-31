@@ -7,6 +7,7 @@ from typing import Any
 from uuid import UUID
 
 from sqlalchemy import JSON, DateTime, String, Text, create_engine, text
+from sqlalchemy.dialects.mysql import DATETIME as MySQLDateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 from .schemas import AnalysisPlan, AnalysisRunResponse, DocumentRecord, RunMetrics
@@ -58,6 +59,13 @@ class InMemoryRepository(Repository):
 
 class MySQLRepository(Repository):
     def __init__(self, database_url: str) -> None:
+        self._engine = create_engine(database_url, pool_pre_ping=True)
+        timestamp_type = (
+            MySQLDateTime(fsp=6)
+            if self._engine.dialect.name == "mysql"
+            else DateTime(timezone=True)
+        )
+
         class Base(DeclarativeBase):
             pass
 
@@ -69,7 +77,7 @@ class MySQLRepository(Repository):
             media_type: Mapped[str] = mapped_column(String(100))
             sha256: Mapped[str] = mapped_column(String(64), index=True)
             text: Mapped[str] = mapped_column(Text)
-            created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+            created_at: Mapped[datetime] = mapped_column(timestamp_type)
 
         class AnalysisRunRow(Base):
             __tablename__ = "analysis_runs"
@@ -86,7 +94,7 @@ class MySQLRepository(Repository):
             completion_tokens: Mapped[int]
             retrieval_hits: Mapped[int]
             tool_success_rate: Mapped[float]
-            created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+            created_at: Mapped[datetime] = mapped_column(timestamp_type)
 
         class RetrievalHitRow(Base):
             __tablename__ = "retrieval_hits"
@@ -109,7 +117,6 @@ class MySQLRepository(Repository):
         self._DocumentRow = DocumentRow
         self._AnalysisRunRow = AnalysisRunRow
         self._RetrievalHitRow = RetrievalHitRow
-        self._engine = create_engine(database_url, pool_pre_ping=True)
         self._session = sessionmaker(self._engine, expire_on_commit=False)
         Base.metadata.create_all(self._engine)
 
