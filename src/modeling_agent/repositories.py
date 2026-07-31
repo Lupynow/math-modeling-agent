@@ -2,11 +2,20 @@ from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
+from sqlalchemy import JSON, DateTime, String, Text, create_engine, text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+
 from .schemas import AnalysisPlan, AnalysisRunResponse, DocumentRecord, RunMetrics
+
+
+def _as_utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
 
 
 class Repository(ABC):
@@ -49,9 +58,6 @@ class InMemoryRepository(Repository):
 
 class MySQLRepository(Repository):
     def __init__(self, database_url: str) -> None:
-        from sqlalchemy import JSON, DateTime, String, Text, create_engine
-        from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
-
         class Base(DeclarativeBase):
             pass
 
@@ -131,7 +137,7 @@ class MySQLRepository(Repository):
                 media_type=row.media_type,
                 sha256=row.sha256,
                 text=row.text,
-                created_at=row.created_at,
+                created_at=_as_utc(row.created_at),
             )
 
     def save_run(self, run: AnalysisRunResponse) -> None:
@@ -174,7 +180,7 @@ class MySQLRepository(Repository):
                 document_id=UUID(row.document_id),
                 status=row.status,
                 model=row.model,
-                created_at=row.created_at,
+                created_at=_as_utc(row.created_at),
                 plan=AnalysisPlan.model_validate(row.output_json),
                 metrics=RunMetrics(
                     latency_ms=row.latency_ms,
@@ -186,8 +192,6 @@ class MySQLRepository(Repository):
             )
 
     def ping(self) -> bool:
-        from sqlalchemy import text
-
         try:
             with self._engine.connect() as connection:
                 connection.execute(text("SELECT 1"))
